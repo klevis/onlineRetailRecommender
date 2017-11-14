@@ -57,13 +57,13 @@ public class UI {
         selectedUserInfoPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Selected User Buying History",
                 TitledBorder.LEFT,
-                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
+                TitledBorder.TOP, sansSerifBold, Color.BLUE));
         contentPanel.add(new JScrollPane(selectedUserInfoPanel));
         suggestingItemsPanel = new JPanel();
         suggestingItemsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Suggested Items for selected User",
                 TitledBorder.CENTER,
-                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
+                TitledBorder.TOP, sansSerifBold, Color.BLUE));
         contentPanel.add(new JScrollPane(suggestingItemsPanel));
         mainPanel.add(contentPanel, BorderLayout.CENTER);
     }
