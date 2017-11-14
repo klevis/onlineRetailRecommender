@@ -35,16 +35,17 @@ public class PrepareData {
 
     public List<User> transformRowsToUserAndItems(List<Row> rows) {
         HashMap<String, User> map = new HashMap<>();
-        for (Row row : rows) {
+        return rows.stream().map(row -> {
+            User user;
             if (map.containsKey(row.getUserId())) {
-                User user = map.get(row.getUserId());
+                user = map.get(row.getUserId());
                 addItem(row, user);
             } else {
-                User user = new User(row.getUserId(), row.getUserCountry());
+                user = new User(row.getUserId(), row.getUserCountry());
                 addItem(row, user);
             }
-        }
-        return new ArrayList<>(map.values());
+            return user;
+        }).collect(Collectors.toList());
     }
 
     private void addItem(Row row, User user) {
