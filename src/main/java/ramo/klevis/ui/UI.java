@@ -4,6 +4,7 @@ import ramo.klevis.data.PrepareData;
 import ramo.klevis.data.User;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
@@ -22,6 +23,8 @@ public class UI {
     private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 14);
     private final Font sansSerifItalic = new Font("SansSerif", Font.ITALIC, 14);
     private PrepareData prepareData;
+    private JPanel selectedUserInfoPanel;
+    private JPanel suggestingItemsPanel;
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -36,20 +39,49 @@ public class UI {
         mainPanel.setLayout(new BorderLayout());
         prepareData = new PrepareData();
 
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel label = new JLabel("Select User");
-        label.setFont(sansSerifItalic);
-        topPanel.add(label);
-        JComboBox<User> comboBox = new JComboBox<>();
-        comboBox.setFont(sansSerifBold);
-        prepareData.readData().stream().forEach(e-> comboBox.addItem(e));
-        topPanel.add(comboBox);
-        mainPanel.add(topPanel, BorderLayout.NORTH);
-
+        addTopPanel();
+        addCenterPanel();
         addSignature();
 
         mainFrame.add(mainPanel);
         mainFrame.setVisible(true);
+    }
+
+    private void addCenterPanel() {
+        JPanel contentPanel = new JPanel(new GridLayout(1, 2));
+        selectedUserInfoPanel = new JPanel();
+        selectedUserInfoPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                "Selected User Buying History",
+                TitledBorder.CENTER,
+                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
+        contentPanel.add(selectedUserInfoPanel);
+        suggestingItemsPanel = new JPanel();
+        suggestingItemsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
+                "Suggested Items for selected User",
+                TitledBorder.CENTER,
+                TitledBorder.TOP, sansSerifItalic, Color.BLUE));
+        contentPanel.add(suggestingItemsPanel);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+    }
+
+    private void addTopPanel() throws Exception {
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+
+        JLabel label = new JLabel("Select User");
+        label.setFont(sansSerifItalic);
+        topPanel.add(label);
+
+        JComboBox<User> comboBox = new JComboBox<>();
+        comboBox.setFont(sansSerifBold);
+        prepareData.readData().stream().forEach(e-> comboBox.addItem(e));
+        topPanel.add(comboBox);
+        comboBox.addItemListener(e -> {
+            int stateChange = e.getStateChange();
+            if (stateChange == 1) {
+
+            }
+        });
+        mainPanel.add(topPanel, BorderLayout.NORTH);
     }
 
     private JFrame createMainFrame() {
