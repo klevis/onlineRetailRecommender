@@ -1,5 +1,8 @@
 package ramo.klevis.ui;
 
+import ramo.klevis.data.PrepareData;
+import ramo.klevis.data.User;
+
 import javax.swing.*;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
@@ -16,6 +19,9 @@ public class UI {
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JProgressBar progressBar;
+    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 14);
+    private final Font sansSerifItalic = new Font("SansSerif", Font.ITALIC, 14);
+    private PrepareData prepareData;
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -28,6 +34,17 @@ public class UI {
         mainFrame = createMainFrame();
         mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
+        prepareData = new PrepareData();
+
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JLabel label = new JLabel("Select User");
+        label.setFont(sansSerifItalic);
+        topPanel.add(label);
+        JComboBox<User> comboBox = new JComboBox<>();
+        comboBox.setFont(sansSerifBold);
+        prepareData.readData().stream().forEach(e-> comboBox.addItem(e));
+        topPanel.add(comboBox);
+        mainPanel.add(topPanel, BorderLayout.NORTH);
 
         addSignature();
 

@@ -44,4 +44,9 @@ public class User {
     public void addItem(Item item) {
         items.add(item);
     }
+
+    @Override
+    public String toString() {
+        return id+" from "+country;
+    }
 }

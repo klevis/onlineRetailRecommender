@@ -2,6 +2,7 @@ package ramo.klevis.data;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import java.io.IOException;
@@ -22,15 +23,14 @@ import java.util.stream.Collectors;
  */
 public class PrepareData {
 
-    private static final String ONLINE_RETAIL_XLSX = "Online Retail.xlsx";
+    private static final String ONLINE_RETAIL_XLSX = "data/Online Retail.csv";
 
     public List<Row> readRowsFromFile() throws IOException, URISyntaxException {
         return Files.readAllLines(getPath(ONLINE_RETAIL_XLSX), StandardCharsets.ISO_8859_1)
                 .stream().parallel().skip(1).map(line -> {
-                    String[] data = line.split(",");
+                    String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
                     return new Row(data[6], data[7], data[1], data[2], Integer.parseInt(data[3]), Double.parseDouble(data[5]));
-
-                }).collect(Collectors.toList());
+                }).filter(e -> e != null).collect(Collectors.toList());
     }
 
     public List<User> transformRowsToUserAndItems(List<Row> rows) {
@@ -40,12 +40,19 @@ public class PrepareData {
             if (map.containsKey(row.getUserId())) {
                 user = map.get(row.getUserId());
                 addItem(row, user);
+                return null;
             } else {
                 user = new User(row.getUserId(), row.getUserCountry());
                 addItem(row, user);
+                map.put(user.getId(), user);
+                return user;
             }
-            return user;
-        }).collect(Collectors.toList());
+
+        }).filter(e -> e != null).collect(Collectors.toList());
+    }
+
+    public List<User> readData() throws Exception {
+        return transformRowsToUserAndItems(readRowsFromFile());
     }
 
     private void addItem(Row row, User user) {
