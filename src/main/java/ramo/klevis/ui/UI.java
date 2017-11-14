@@ -3,11 +3,14 @@ package ramo.klevis.ui;
 import ramo.klevis.data.Item;
 import ramo.klevis.data.PrepareData;
 import ramo.klevis.data.User;
+import ramo.klevis.ml.IFCollaborativeFiltering;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.*;
@@ -29,6 +32,7 @@ public class UI {
     private PrepareData prepareData;
     private JPanel selectedUserInfoPanel;
     private JPanel suggestingItemsPanel;
+    private List<User> users;
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -77,7 +81,8 @@ public class UI {
 
         JComboBox<User> comboBox = new JComboBox<>();
         comboBox.setFont(sansSerifBold);
-        prepareData.readData().stream().forEach(e-> comboBox.addItem(e));
+        users = prepareData.readData();
+        users.stream().forEach(e -> comboBox.addItem(e));
         topPanel.add(comboBox);
         comboBox.addItemListener(e -> {
             int stateChange = e.getStateChange();
@@ -94,6 +99,15 @@ public class UI {
                 selectedUserInfoPanel.updateUI();
             }
         });
+
+        JButton trainButton = new JButton("Train Algorithm");
+        trainButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new IFCollaborativeFiltering().train(users);
+            }
+        });
+        topPanel.add(trainButton);
         mainPanel.add(topPanel, BorderLayout.NORTH);
     }
 

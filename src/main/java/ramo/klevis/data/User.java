@@ -1,12 +1,13 @@
 package ramo.klevis.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by klevis.ramo on 11/14/2017.
  */
-public class User {
+public class User implements Serializable{
     private String id;
     private String country;
 

@@ -1,9 +1,11 @@
 package ramo.klevis.data;
 
+import java.io.Serializable;
+
 /**
  * Created by klevis.ramo on 11/14/2017.
  */
-public class Item {
+public class Item implements Serializable {
     private String id;
     private String description;
     private double price;
