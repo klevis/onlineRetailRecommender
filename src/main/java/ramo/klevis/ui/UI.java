@@ -1,5 +1,6 @@
 package ramo.klevis.ui;
 
+import ramo.klevis.data.Item;
 import ramo.klevis.data.PrepareData;
 import ramo.klevis.data.User;
 
@@ -9,6 +10,8 @@ import javax.swing.plaf.FontUIResource;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.*;
+import java.util.List;
 
 /**
  * Created by klevis.ramo on 10/29/2017.
@@ -22,6 +25,7 @@ public class UI {
     private JProgressBar progressBar;
     private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 14);
     private final Font sansSerifItalic = new Font("SansSerif", Font.ITALIC, 14);
+    private final Font serifItalic = new Font("Serif", Font.ITALIC, 14);
     private PrepareData prepareData;
     private JPanel selectedUserInfoPanel;
     private JPanel suggestingItemsPanel;
@@ -52,15 +56,15 @@ public class UI {
         selectedUserInfoPanel = new JPanel();
         selectedUserInfoPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Selected User Buying History",
-                TitledBorder.CENTER,
+                TitledBorder.LEFT,
                 TitledBorder.TOP, sansSerifItalic, Color.BLUE));
-        contentPanel.add(selectedUserInfoPanel);
+        contentPanel.add(new JScrollPane(selectedUserInfoPanel));
         suggestingItemsPanel = new JPanel();
         suggestingItemsPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
                 "Suggested Items for selected User",
                 TitledBorder.CENTER,
                 TitledBorder.TOP, sansSerifItalic, Color.BLUE));
-        contentPanel.add(suggestingItemsPanel);
+        contentPanel.add(new JScrollPane(suggestingItemsPanel));
         mainPanel.add(contentPanel, BorderLayout.CENTER);
     }
 
@@ -78,7 +82,16 @@ public class UI {
         comboBox.addItemListener(e -> {
             int stateChange = e.getStateChange();
             if (stateChange == 1) {
-
+                selectedUserInfoPanel.removeAll();
+                User user = (User) e.getItem();
+                List<Item> items = user.getItems();
+                selectedUserInfoPanel.setLayout(new GridLayout(25, 1));
+                for (Item item : items) {
+                    JLabel info = new JLabel(item.getDescription() + " - " + items.size() + " - " + item.getPrice() + " $");
+                    info.setFont(serifItalic);
+                    selectedUserInfoPanel.add(info);
+                }
+                selectedUserInfoPanel.updateUI();
             }
         });
         mainPanel.add(topPanel, BorderLayout.NORTH);
