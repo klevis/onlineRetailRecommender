@@ -9,11 +9,21 @@ public class Item implements Serializable {
     private String id;
     private String description;
     private double price;
+    private int size;
 
-    public Item(String id, String description, double price) {
+    public Item(String id, String description, double price, int size) {
         this.id = id;
         this.description = description;
         this.price = price;
+        this.size = size;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public String getId() {

@@ -3,6 +3,7 @@ package ramo.klevis.data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import java.io.IOException;
@@ -48,7 +49,7 @@ public class PrepareData {
                 return user;
             }
 
-        }).filter(e -> e != null).collect(Collectors.toList());
+        }).filter(e -> e != null).sorted(Comparator.comparing(User::getId)).collect(Collectors.toList());
     }
 
     public List<User> readData() throws Exception {
@@ -56,7 +57,7 @@ public class PrepareData {
     }
 
     private void addItem(Row row, User user) {
-        user.addItem(new Item(row.getItemID(), row.getItemDescription(), row.getItemPrice()));
+        user.addItem(new Item(row.getItemID(), row.getItemDescription(), row.getItemPrice(), row.getItemsBoughNumber()));
     }
 
 

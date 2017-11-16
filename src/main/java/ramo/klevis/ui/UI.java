@@ -92,7 +92,7 @@ public class UI {
                 List<Item> items = user.getItems();
                 selectedUserInfoPanel.setLayout(new GridLayout(25, 1));
                 for (Item item : items) {
-                    JLabel info = new JLabel(item.getDescription() + " - " + items.size() + " - " + item.getPrice() + " $");
+                    JLabel info = new JLabel(item.getDescription() + " - " + item.getSize() + " - " + item.getPrice() + " $");
                     info.setFont(serifItalic);
                     selectedUserInfoPanel.add(info);
                 }
@@ -104,7 +104,7 @@ public class UI {
         trainButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new IFCollaborativeFiltering().train(users);
+                new IFCollaborativeFiltering().train();
             }
         });
         topPanel.add(trainButton);
