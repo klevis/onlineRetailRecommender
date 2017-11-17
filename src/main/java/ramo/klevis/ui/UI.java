@@ -68,8 +68,8 @@ public class UI {
         mainPanel.setLayout(new BorderLayout());
         prepareData = new PrepareData();
 
-        addTopPanel();
         addCenterPanel();
+        addTopPanel();
         addSignature();
 
         mainFrame.add(mainPanel);
@@ -111,7 +111,7 @@ public class UI {
                 selectedUserInfoPanel.removeAll();
                 selectedUserInfoPanel.setLayout(new GridLayout(25, 1));
                 suggestingItemsPanel.removeAll();
-                suggestingItemsPanel.setLayout(new GridLayout(10, 1));
+                suggestingItemsPanel.setLayout(new GridLayout(15, 1));
 
                 User user = (User) e.getItem();
                 List<Item> items = user.getItems();
@@ -121,13 +121,18 @@ public class UI {
                 selectedUserInfoPanel.updateUI();
 
                 List<Item> suggestedItems = user.getSuggestedItems();
+                int i = 1;
                 for (Item suggestedItem : suggestedItems) {
-                    addLabel(suggestingItemsPanel, suggestedItem.getDescription() + " - " + suggestedItem.getPrice() + " $", sansSerifBold);
+                    JLabel jLabel = addLabel(suggestingItemsPanel, i + " - " + suggestedItem.getDescription() + " - " + suggestedItem.getPrice() + " $", sansSerifItalic);
+                    jLabel.setForeground(new Color(0, 0, 128));
                     suggestingItemsPanel.updateUI();
+                    i++;
                 }
                 suggestingItemsPanel.updateUI();
             }
         });
+        comboBox.setSelectedIndex(1);
+        comboBox.setSelectedIndex(0);
 
         JButton trainButton = new JButton("Train Algorithm");
         trainButton.addActionListener(e -> {
@@ -183,6 +188,7 @@ public class UI {
         rmse = addLabel(topPanel, "RMSE : ", sansSerifBold);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
+
     }
 
     private JLabel addLabel(JPanel panel, String text, Font sansSerifBold) {
@@ -193,8 +199,8 @@ public class UI {
     }
 
     private void updateSelectedPanel(Item item) {
-        addLabel(selectedUserInfoPanel, item.getDescription() + " - " + item.getSize() + " - " + item.getPrice() + " $", sansSerifItalic
-        );
+        JLabel jLabel = addLabel(selectedUserInfoPanel, item.getDescription() + " - " + item.getSize() + " - " + item.getPrice() + " $", sansSerifItalic);
+        jLabel.setForeground(new Color(0, 0, 205));
     }
 
     private void updateUserWithSuggestion(List<Row> train) {

@@ -62,7 +62,7 @@ public class IFCollaborativeFiltering {
                 .setPredictionCol("prediction");
         rmse = evaluator.evaluate(predictions);
 
-        return model.recommendForAllUsers(10).collectAsList();
+        return model.recommendForAllUsers(15).collectAsList();
 
 
     }
