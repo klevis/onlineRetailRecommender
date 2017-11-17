@@ -8,21 +8,26 @@ import java.util.List;
  * Created by klevis.ramo on 11/14/2017.
  */
 public class User implements Serializable{
-    private String id;
+    private int id;
     private String country;
 
     private List<Item> items = new ArrayList<>();
+    private List<Item> suggestedItems = new ArrayList<>();
 
-    public User(String id, String country) {
+    public User(int id, String country) {
         this.id = id;
         this.country = country;
     }
 
-    public String getId() {
+    public List<Item> getSuggestedItems() {
+        return new ArrayList<>(suggestedItems);
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -49,5 +54,9 @@ public class User implements Serializable{
     @Override
     public String toString() {
         return id+" from "+country;
+    }
+
+    public void addSuggestedItem(Item item) {
+        suggestedItems.add(item);
     }
 }

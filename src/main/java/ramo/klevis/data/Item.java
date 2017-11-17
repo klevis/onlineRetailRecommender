@@ -6,12 +6,12 @@ import java.io.Serializable;
  * Created by klevis.ramo on 11/14/2017.
  */
 public class Item implements Serializable {
-    private String id;
+    private int id;
     private String description;
     private double price;
     private int size;
 
-    public Item(String id, String description, double price, int size) {
+    public Item(int id, String description, double price, int size) {
         this.id = id;
         this.description = description;
         this.price = price;
@@ -26,11 +26,11 @@ public class Item implements Serializable {
         this.size = size;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -1,5 +1,6 @@
 package ramo.klevis.ui;
 
+import org.apache.spark.sql.Row;
 import ramo.klevis.data.Item;
 import ramo.klevis.data.PrepareData;
 import ramo.klevis.data.User;
@@ -13,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -33,10 +35,13 @@ public class UI {
     private JPanel selectedUserInfoPanel;
     private JPanel suggestingItemsPanel;
     private List<User> users;
+    private HashMap<Integer, User> userHashMap;
+    private HashMap<Integer, Item> itemHashMap;
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         UIManager.put("Table.font", new FontUIResource(new Font("Dialog", Font.ITALIC, 14)));
+        UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 14)));
         UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
         initUI();
     }
@@ -82,33 +87,63 @@ public class UI {
         JComboBox<User> comboBox = new JComboBox<>();
         comboBox.setFont(sansSerifBold);
         users = prepareData.readData();
+        userHashMap = prepareData.getUserHashMap();
+        itemHashMap = prepareData.getItemHashMap();
         users.stream().forEach(e -> comboBox.addItem(e));
         topPanel.add(comboBox);
         comboBox.addItemListener(e -> {
             int stateChange = e.getStateChange();
             if (stateChange == 1) {
                 selectedUserInfoPanel.removeAll();
+                selectedUserInfoPanel.setLayout(new GridLayout(25, 1));
+                suggestingItemsPanel.removeAll();
+                suggestingItemsPanel.setLayout(new GridLayout(10, 1));
+
                 User user = (User) e.getItem();
                 List<Item> items = user.getItems();
-                selectedUserInfoPanel.setLayout(new GridLayout(25, 1));
                 for (Item item : items) {
-                    JLabel info = new JLabel(item.getDescription() + " - " + item.getSize() + " - " + item.getPrice() + " $");
-                    info.setFont(serifItalic);
-                    selectedUserInfoPanel.add(info);
+                    updateSelectedPanel(item);
                 }
                 selectedUserInfoPanel.updateUI();
+
+                List<Item> suggestedItems = user.getSuggestedItems();
+                for (Item suggestedItem : suggestedItems) {
+                    JLabel suggestedInfo = new JLabel(suggestedItem.getDescription() + " - " + suggestedItem.getPrice() + " $");
+                    suggestedInfo.setFont(sansSerifBold);
+                    suggestingItemsPanel.add(suggestedInfo);
+                    suggestingItemsPanel.updateUI();
+                }
+                suggestingItemsPanel.updateUI();
             }
         });
 
         JButton trainButton = new JButton("Train Algorithm");
-        trainButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new IFCollaborativeFiltering().train();
+        trainButton.addActionListener(e -> {
+            try {
+                List<Row> train = new IFCollaborativeFiltering().train();
+                updateUserWithSuggestion(train);
+            } catch (IOException e1) {
+                throw new RuntimeException(e1);
             }
         });
         topPanel.add(trainButton);
         mainPanel.add(topPanel, BorderLayout.NORTH);
+    }
+
+    private void updateSelectedPanel(Item item) {
+        JLabel info = new JLabel(item.getDescription() + " - " + item.getSize() + " - " + item.getPrice() + " $");
+        info.setFont(serifItalic);
+        selectedUserInfoPanel.add(info);
+    }
+
+    private void updateUserWithSuggestion(List<Row> train) {
+        for (Row row : train) {
+            int itemId = (int) row.apply(0);
+            int userId = (int) row.apply(3);
+            User user = userHashMap.get(userId);
+            Item item = itemHashMap.get(itemId);
+            user.addSuggestedItem(item);
+        }
     }
 
     private JFrame createMainFrame() {
