@@ -24,7 +24,7 @@ public class IFCollaborativeFiltering {
     private Double rmse;
 
 
-    public List<Row> train() throws IOException {
+    public List<Row> train(Integer trainSize, Integer testSize, Integer feature, Double reg) throws IOException {
         if (sparkSession == null) {
             sparkSession = SparkSession.builder()
                     .master("local[*]")
@@ -37,18 +37,20 @@ public class IFCollaborativeFiltering {
 
         Dataset<Row> ratings = sparkSession.createDataFrame(ratingsRDD, Rating.class);
 
-        Dataset<Row>[] splits = ratings.randomSplit(new double[]{0.8, 0.2});
+        double v = trainSize / 100d;
+        double v1 = testSize / 100d;
+        Dataset<Row>[] splits = ratings.randomSplit(new double[]{v, v1});
         Dataset<Row> training = splits[0];
         Dataset<Row> test = splits[1];
 
         ALS als = new ALS()
                 .setMaxIter(1)
-                .setRegParam(0.01)
+                .setRegParam(reg)
                 .setUserCol("userId")
                 .setItemCol("movieId")
                 .setRatingCol("rating")
                 .setImplicitPrefs(true).
-                        setRank(100);
+                        setRank(feature);
         ALSModel model = als.fit(training);
         model.setColdStartStrategy("drop");
 

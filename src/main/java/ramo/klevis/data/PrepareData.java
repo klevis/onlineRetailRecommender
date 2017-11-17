@@ -84,8 +84,9 @@ public class PrepareData {
             if (StringUtils.isEmpty(row.getUserId())) {
                 return null;
             }
-            if (userHashMap.containsKey(row.getUserId())) {
-                user = userHashMap.get(row.getUserId());
+            if (userHashMap.containsKey(Integer.parseInt(row.getUserId()))) {
+
+                user = userHashMap.get(Integer.parseInt(row.getUserId()));
                 addItem(row, user);
                 return null;
             } else {
