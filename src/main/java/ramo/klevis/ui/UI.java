@@ -31,9 +31,8 @@ public class UI {
     private JFrame mainFrame;
     private JPanel mainPanel;
     private JProgressBar progressBar;
-    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 14);
-    private final Font sansSerifItalic = new Font("SansSerif", Font.ITALIC, 14);
-    private final Font serifItalic = new Font("Serif", Font.ITALIC, 14);
+    private final Font sansSerifBold = new Font("SansSerif", Font.BOLD, 18);
+    private final Font sansSerifItalic = new Font("SansSerif", Font.ITALIC, 18);
     private PrepareData prepareData;
     private JPanel selectedUserInfoPanel;
     private JPanel suggestingItemsPanel;
@@ -53,9 +52,8 @@ public class UI {
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        UIManager.put("Table.font", new FontUIResource(new Font("Dialog", Font.ITALIC, 14)));
-        UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 14)));
-        UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 16)));
+        UIManager.put("Button.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
+        UIManager.put("ProgressBar.font", new FontUIResource(new Font("Dialog", Font.BOLD, 18)));
         initUI();
     }
 
@@ -106,7 +104,7 @@ public class UI {
             int stateChange = e.getStateChange();
             if (stateChange == 1) {
                 selectedUserInfoPanel.removeAll();
-                selectedUserInfoPanel.setLayout(new GridLayout(25, 1));
+                selectedUserInfoPanel.setLayout(new GridLayout(15, 1));
                 suggestingItemsPanel.removeAll();
                 suggestingItemsPanel.setLayout(new GridLayout(15, 1));
 
@@ -128,6 +126,10 @@ public class UI {
                 suggestingItemsPanel.updateUI();
             }
         });
+
+        List<Row> defaultTrain = ifCollaborativeFiltering.loadDefaultModel();
+        updateUserWithSuggestion(defaultTrain);
+
         comboBox.setSelectedIndex(1);
         comboBox.setSelectedIndex(0);
 
@@ -182,7 +184,8 @@ public class UI {
         regField.setFont(sansSerifBold);
         topPanel.add(regField);
 
-        rmse = addLabel(topPanel, "RMSE : ", sansSerifBold);
+        addLabel(topPanel, "RMSE : ", sansSerifBold);
+        rmse = addLabel(topPanel, "" + ifCollaborativeFiltering.getRmse(), sansSerifBold);
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
 

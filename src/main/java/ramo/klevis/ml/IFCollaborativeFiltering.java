@@ -23,14 +23,15 @@ public class IFCollaborativeFiltering {
     private transient SparkSession sparkSession;
     private Double rmse;
 
+    public List<Row> loadDefaultModel() {
+        initSparkSession();
+        ALSModel defaultModel = ALSModel.load("defaultModel");
+        rmse=42d;
+        return defaultModel.recommendForAllUsers(15).collectAsList();
+    }
 
-    public List<Row> train(Integer trainSize, Integer testSize, Integer feature, Double reg) throws Exception{
-        if (sparkSession == null) {
-            sparkSession = SparkSession.builder()
-                    .master("local[*]")
-                    .appName("Online Retailer")
-                    .getOrCreate();
-        }
+    public List<Row> train(Integer trainSize, Integer testSize, Integer feature, Double reg) throws Exception {
+        initSparkSession();
         Class aClass = this.getClass().getClassLoader().loadClass("org.apache.spark.sql.execution.datasources.csv.CSVFileFormat");
         JavaRDD<Rating> ratingsRDD = sparkSession
                 .read()
@@ -64,11 +65,19 @@ public class IFCollaborativeFiltering {
                 .setLabelCol("rating")
                 .setPredictionCol("prediction");
         rmse = evaluator.evaluate(predictions);
-        model.save("C:\\Users\\klevis.ramo\\Desktop\\lale");
-
+        rmse = Double.valueOf(rmse.intValue());
         return model.recommendForAllUsers(15).collectAsList();
 
 
+    }
+
+    private void initSparkSession() {
+        if (sparkSession == null) {
+            sparkSession = SparkSession.builder()
+                    .master("local[*]")
+                    .appName("Online Retailer")
+                    .getOrCreate();
+        }
     }
 
     public Double getRmse() {
