@@ -1,6 +1,5 @@
 package ramo.klevis.ui;
 
-import com.sun.org.apache.xml.internal.utils.res.XResources_zh_CN;
 import org.apache.spark.sql.Row;
 import ramo.klevis.data.Item;
 import ramo.klevis.data.PrepareData;
@@ -8,17 +7,14 @@ import ramo.klevis.data.User;
 import ramo.klevis.ml.IFCollaborativeFiltering;
 import scala.collection.mutable.WrappedArray;
 
-import javax.sound.midi.Soundbank;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.FontUIResource;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -53,6 +49,7 @@ public class UI {
     private JLabel rmse;
     private SpinnerNumberModel modelRegSize;
     private JSpinner regField;
+    private IFCollaborativeFiltering ifCollaborativeFiltering = new IFCollaborativeFiltering();
 
     public UI() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -138,7 +135,7 @@ public class UI {
         trainButton.addActionListener(e -> {
             SwingUtilities.invokeLater(() -> showProgressBar());
             new Thread(() -> {
-                IFCollaborativeFiltering ifCollaborativeFiltering = new IFCollaborativeFiltering();
+
                 List<Row> train;
                 try {
                     train = ifCollaborativeFiltering.train((Integer) trainField.getValue(),
@@ -148,7 +145,7 @@ public class UI {
                     updateUserWithSuggestion(train);
                     rmse.setText("" + ifCollaborativeFiltering.getRmse());
                     rmse.updateUI();
-                } catch (IOException e1) {
+                } catch (Exception e1) {
                     throw new RuntimeException(e1);
                 } finally {
                     progressBar.setVisible(false);

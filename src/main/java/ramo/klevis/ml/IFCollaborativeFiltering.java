@@ -24,15 +24,18 @@ public class IFCollaborativeFiltering {
     private Double rmse;
 
 
-    public List<Row> train(Integer trainSize, Integer testSize, Integer feature, Double reg) throws IOException {
+    public List<Row> train(Integer trainSize, Integer testSize, Integer feature, Double reg) throws Exception{
         if (sparkSession == null) {
             sparkSession = SparkSession.builder()
                     .master("local[*]")
                     .appName("Online Retailer")
                     .getOrCreate();
         }
+        Class aClass = this.getClass().getClassLoader().loadClass("org.apache.spark.sql.execution.datasources.csv.CSVFileFormat");
         JavaRDD<Rating> ratingsRDD = sparkSession
-                .read().csv("src/main/resources/data/Online Retail.csv").javaRDD()
+                .read()
+                .format("org.apache.spark.sql.execution.datasources.csv.CSVFileFormat")
+                .csv("data/Online Retail.csv").javaRDD()
                 .map(Rating::parseRating).filter(e -> e != EMPTY);
 
         Dataset<Row> ratings = sparkSession.createDataFrame(ratingsRDD, Rating.class);

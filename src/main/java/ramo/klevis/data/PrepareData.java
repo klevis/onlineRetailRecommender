@@ -64,6 +64,7 @@ public class PrepareData {
                 .replaceAll("z", "24")
                 .replaceAll("n", "7"));
     }
+
     ;
 
     public HashMap<Integer, Item> getItemHashMap() {
@@ -109,7 +110,7 @@ public class PrepareData {
         user.addItem(item);
     }
 
-    private Path getPath(String path) throws IOException, URISyntaxException {
+    public Path getPath(String path) throws IOException, URISyntaxException {
         return getPath(this.getClass().getResource("/" + path).toURI());
     }
 
