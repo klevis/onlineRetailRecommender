@@ -64,5 +64,5 @@ Class-Path: spark-unsafe_2.11-2.2.0.jar commons-beanutils-1.7.0.jar ju
  ar slf4j-api-1.7.16.jar metrics-graphite-3.1.2.jar spark-tags_2.11-2.
  2.0.jar protobuf-java-2.5.0.jar py4j-0.10.4.jar spark-sql_2.11-2.2.0.
  jar
-Main-Class: ramo.klevis.JavaALSExample
+Main-Class: ramo.klevis.Run
 

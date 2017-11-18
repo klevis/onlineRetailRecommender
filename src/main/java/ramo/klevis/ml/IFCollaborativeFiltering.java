@@ -47,7 +47,7 @@ public class IFCollaborativeFiltering {
         Dataset<Row> test = splits[1];
 
         ALS als = new ALS()
-                .setMaxIter(1)
+                .setMaxIter(5)
                 .setRegParam(reg)
                 .setUserCol("userId")
                 .setItemCol("movieId")
@@ -64,6 +64,7 @@ public class IFCollaborativeFiltering {
                 .setLabelCol("rating")
                 .setPredictionCol("prediction");
         rmse = evaluator.evaluate(predictions);
+        model.save("C:\\Users\\klevis.ramo\\Desktop\\lale");
 
         return model.recommendForAllUsers(15).collectAsList();
 
